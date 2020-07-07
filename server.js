@@ -3,10 +3,23 @@ const { ApolloServer } = require('apollo-server-express');
 
 const typeDefs = require('./schema/typeDefs')
 const resolvers = require('./schema/resolvers')
-const models = require('./models')
+const models = require('./models');
+const loaderCreater = require('./dataLoaders');
 
+const server = new ApolloServer({ 
+  typeDefs, 
+  resolvers, 
+  context: ({ req }) => {
 
-const server = new ApolloServer({ typeDefs, resolvers, context: { models } });
+    // create new loader instances for every request
+    const loaders = loaderCreater();
+
+    return {
+      models,
+      loaders
+    };
+  }
+});
 
 const app = express();
 server.applyMiddleware({ app });

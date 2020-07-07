@@ -1,6 +1,6 @@
-const categoryLoader = require('../dataLoaders/categoryLoader');
-const postLoader = require('../dataLoaders/postLoader');
-const hobbyLoader = require('../dataLoaders/hobbyLoader');
+// const categoryLoader = require('../dataLoaders/categoryLoader');
+// const postLoader = require('../dataLoaders/postLoader');
+// const hobbyLoader = require('../dataLoaders/hobbyLoader');
 
 const resolvers = {
   Query: {
@@ -44,23 +44,23 @@ const resolvers = {
     }
   },
   Student: {
-    async hobbies(student) {
-      return hobbyLoader.load(student.id);
+    async hobbies(student, {}, { models, loaders }) {
+      return loaders.hobbyLoader.load(student.id);
     }
   },
   Hobbies: {
-    async student(Hobbies) {
+    async student(Hobbies, { }, { models, loaders }) {
       return Hobbies.getStudent();
     }
   },
   Post: {
-    async category(Post) {
-      return categoryLoader.load(Post.id);
+    async category(Post, { }, { models, loaders }) {
+      return loaders.categoryLoader.load(Post.id);
     }
   },
   Category: {
-    async post(Category) {
-      return postLoader.load(Category.id); 
+    async post(Category, { }, { models, loaders }) {
+      return loaders.postLoader.load(Category.id); 
     }
   }
 
