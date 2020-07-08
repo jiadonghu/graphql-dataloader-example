@@ -1,10 +1,24 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
+// const passport  = require('passport');
+// const passportJWT = require('passport-jwt');
+// const jwt = require('jsonwebtoken');
 
 const typeDefs = require('./schema/typeDefs')
 const resolvers = require('./schema/resolvers')
 const models = require('./models');
 const loaderCreater = require('./dataLoaders');
+
+// const opts = {};
+// opts.jwtFromRequest = passportJWT.ExtractJwt.fromHeader('authorization');
+// opts.secretOrKey = 'secret';
+// opts.issuer = 'accounts.examplesoft.com';
+// opts.audience = 'yoursite.net';
+
+// passport.use(new passportJWT.Strategy(opts, function (jwt_payload, done) {
+//   console.log(jwt_payload);
+//   return done(null, { message: 'jwt' });
+// }));
 
 const server = new ApolloServer({ 
   typeDefs, 
@@ -22,7 +36,23 @@ const server = new ApolloServer({
 });
 
 const app = express();
+// app.use(passport.authenticate('jwt', { session: false }), (req, res, next) => {
+//   console.log('-----mid')
+//   next();
+// })
 server.applyMiddleware({ app });
+
+// app.get('/login', async (req, res, next) => {
+//   const token = await jwt.sign({ foo: 'new token' }, opts.secretOrKey, {
+//     audience: opts.audience,
+//     issuer: opts.issuer
+//   });
+//   res.status(200).json(token);
+// });
+
+// app.get('/test', passport.authenticate('jwt', { session: false }),async (req, res, next) => {
+//   res.status(200).json({message: 'successful'});
+// });
 
 models.sequelize.authenticate();
 models.sequelize.sync();
@@ -30,117 +60,3 @@ models.sequelize.sync();
 app.listen({ port: 4000 }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// var express = require('express');
-// var graphqlHTTP = require('express-graphql');
-// var { buildSchema } = require('graphql');
-// const DBMessage = require('./models/message');
-
-// // Construct a schema, using GraphQL schema language
-// var schema = buildSchema(`
-//   input MessageInput {
-//     content: String
-//     author: String
-//   }
-
-//   type Message {
-//     id: ID!
-//     content: String
-//     author: String
-//   }
-
-//   type Query {
-//     getMessage(id: ID!): Message
-//   }
-
-//   type Mutation {
-//     createMessage(input: MessageInput): Message
-//     updateMessage(id: ID!, input: MessageInput): Message
-//   }
-// `);
-
-// // If Message had any complex fields, we'd put them on this object.
-// // class Message {
-// //   constructor(id, { content, author }) {
-// //     this.id = id;
-// //     this.content = content;
-// //     this.author = author;
-// //   }
-// // }
-
-// // Maps username to content
-// // var fakeDatabase = {};
-
-// var root = {
-//   getMessage: async ({ id }) => {
-//     const message = await DBMessage.findOne({
-//       where: { id }
-//     });
-//     if (!message) {
-//       throw new Error('no message exists with id ' + id);
-//     }
-//     console.log(message);
-//     return message.dataValues;
-//   },
-//   createMessage: ({ input }) => {
-//     // Create a random id for our "database".
-//     var id = require('crypto').randomBytes(10).toString('hex');
-
-//     DBMessage.findAll({}).then(result => console.log(result)).catch(e => console.log(e));
-
-//     fakeDatabase[id] = input;
-//     return new Message(id, input);
-//   },
-//   updateMessage: ({ id, input }) => {
-//     if (!fakeDatabase[id]) {
-//       throw new Error('no message exists with id ' + id);
-//     }
-//     // This replaces all old data, but some apps might want partial update.
-//     fakeDatabase[id] = input;
-//     return new Message(id, input);
-//   },
-// };
-
-// var app = express();
-// app.use('/graphql', graphqlHTTP({
-//   schema: schema,
-//   rootValue: root,
-//   graphiql: true,
-// }));
-// app.listen(4000, () => {
-//   console.log('Running a GraphQL API server at localhost:4000/graphql');
-// });

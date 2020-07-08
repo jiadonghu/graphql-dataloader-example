@@ -1,7 +1,3 @@
-// const categoryLoader = require('../dataLoaders/categoryLoader');
-// const postLoader = require('../dataLoaders/postLoader');
-// const hobbyLoader = require('../dataLoaders/hobbyLoader');
-
 const resolvers = {
   Query: {
     async getStudent(root, { id }, { models }) {
@@ -41,6 +37,21 @@ const resolvers = {
     },
     async createCategory(root, { name }, { models }) {
       return models.Category.create({ name });
+    },
+    async updatePost(root, { id, categoryId, title, content }, {models}) {
+      const post = await models.Post.findByPk(id);
+      if (!post) throw new Error('No post found!');
+      post.categoryId = categoryId;
+      post.title = title;
+      post.content = content;
+      await post.save();
+      return post;
+    },
+    async deletePost(root, { id }, { models }) {
+      const post = await models.Post.findByPk(id);
+      if (!post) throw new Error('No post found!');
+      await post.destroy();
+      return post;
     }
   },
   Student: {

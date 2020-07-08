@@ -32,13 +32,14 @@ const typeDefs = gql`
     getCategory(id: Int!): Category
     getAllPost: [Post]!
     getAllCategory: [Category]!
-
   }
   type Mutation {
     createStudent(firstName: String!, email: String!): Student!
     createHobbies(studentId: Int!, title: String!): Hobbies!
     createPost(categoryId: Int!, title: String!, content: String!): Post!
+    updatePost(id: Int!, categoryId: Int!, title: String!, content: String!): Post!
     createCategory(name: String!): Category!
+    deletePost(id: Int!): Post!
   }
 `
 
